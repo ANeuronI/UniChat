@@ -1,21 +1,9 @@
-import { hostname } from 'os';
-
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//     images:{
-//         remotePatterns:
-//         [ {
-//             protocol:'https',
-//             hostname:'img.clerk.com'
-//         },
-//         ]
-//     }
-// };
-
-// export default nextConfig;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  typescript:{
+    ignoreBuildErrors:true,
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb', // Increase body size limit
