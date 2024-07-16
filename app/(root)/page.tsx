@@ -16,7 +16,7 @@ import Pagination from "@/components/shared/Pagination";
     if (!user) return null;
   
     const userInfo = await fetchUser(user.id);
-    if (!userInfo?.onboarded) redirect("/onboarding");
+    if (!userInfo?.onboarded) redirect("/sign-in");
   
     const result = await fetchPosts(
       searchParams.page ? +searchParams.page : 1,
