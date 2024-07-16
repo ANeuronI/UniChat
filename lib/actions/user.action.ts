@@ -1,5 +1,5 @@
 "use server"
-
+import Community from "../models/community.model";
 import { connectToDB } from "../mongoose"
 import User from "../models/user.model"
 import { revalidatePath } from "next/cache";
@@ -55,11 +55,10 @@ export async function fetchUser(userId: string) {
     await connectToDB(); // Ensure we wait for the connection to establish
 
     try {
-        return await User.findOne({ id: userId });
-        // .populate({
-        //     path: 'communities',
-        //     model: 'community'
-        // });
+        return await User.findOne({ id: userId }).populate({
+            path: "communities",
+            model: Community,
+          });
     } catch (error: any) {
         console.error('Error in fetchUser:', error);
         throw new Error(`Failed to fetch user: ${error.message}`);
@@ -72,19 +71,25 @@ export async function fetchUserPosts(userId:string) {
         await connectToDB();
 
         const threads = await User.findOne({id: userId}).populate({
-            path:'threads',
-            model:Thread,
-            populate:{
-                path: 'children',
-                model:Thread,
-                populate:{
-                    path:'author',
-                    model:User,
-                    select:'name image id'
-
-                }
-            }
-        })
+            path: "threads",
+            model: Thread,
+            populate: [
+              {
+                path: "community",
+                model: Community,
+                select: "name id image _id", // Select the "name" and "_id" fields from the "Community" model
+              },
+              {
+                path: "children",
+                model: Thread,
+                populate: {
+                  path: "author",
+                  model: User,
+                  select: "name image id", // Select the "name" and "_id" fields from the "User" model
+                },
+              },
+            ],
+          });
         return threads;
     } catch (error:any) {
         throw new Error(`Failed to fetch user posts : ${error.message}`)
@@ -115,7 +120,7 @@ sortBy? : SortOrder;
             id :{$ne: userId}
         }
 
-        if(searchString.trim() != ''){
+        if(searchString.trim() != ""){
             query.$or = [
                   {  username : {$regex: regex} },
                   {name : {$regex: regex}},
@@ -163,3 +168,4 @@ export async function getActivity(userId : string) {
         throw new Error(`Error : ${error.message}`);
     }
 }
+

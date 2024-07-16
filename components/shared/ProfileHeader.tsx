@@ -1,6 +1,5 @@
-
 import Image from "next/image";
-
+import Link from "next/link";
 
 interface Props {
   accountId: string;
@@ -9,6 +8,7 @@ interface Props {
   username: string;
   imgUrl: string;
   bio: string;
+  type?: "User" | "Community";
 }
 
 const ProfileHeader = ({
@@ -18,12 +18,24 @@ const ProfileHeader = ({
   username,
   imgUrl,
   bio,
+  type,
 }: Props) => {
   console.log("Profile Image URL:", imgUrl);
   return (
     <div className="flex w-full flex-col justify-start">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
+          <div className="flex flex-col">
+            <Link href={`/onboarding`}>
+              <Image
+                src="/assets/edit.svg"
+                alt="reply"
+                width={24}
+                height={24}
+                className="cursor-pointer object-contain"
+              />
+            </Link>
+          </div>
           <div className="relative h-20 w-20 object-cover">
             <Image
               src={imgUrl}
